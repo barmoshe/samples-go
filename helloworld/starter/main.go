@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"time"
 
 	"go.temporal.io/sdk/client"
 
@@ -10,10 +12,9 @@ import (
 )
 
 func main() {
-	// The client is a heavyweight object that should be created once per process.
 	c, err := client.Dial(client.Options{})
 	if err != nil {
-		log.Fatalln("Unable to create client", err)
+		log.Fatalln("Unable to create client:", err)
 	}
 	defer c.Close()
 
@@ -22,18 +23,28 @@ func main() {
 		TaskQueue: "hello-world",
 	}
 
-	we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, helloworld.Workflow, "Temporal")
-	if err != nil {
-		log.Fatalln("Unable to execute workflow", err)
-	}
+	counter := 0
 
-	log.Println("Started workflow", "WorkflowID", we.GetID(), "RunID", we.GetRunID())
+	for {
+		counter++
+		name := fmt.Sprintf("%d", counter)
 
-	// Synchronously wait for the workflow completion.
-	var result string
-	err = we.Get(context.Background(), &result)
-	if err != nil {
-		log.Fatalln("Unable get workflow result", err)
+		we, err := c.ExecuteWorkflow(context.Background(), workflowOptions, helloworld.Workflow, name)
+		if err != nil {
+			log.Fatalln("Unable to execute workflow:", err)
+		}
+
+		log.Println("Started workflow. WorkflowID:", we.GetID(), "RunID:", we.GetRunID())
+
+		var result string
+		err = we.Get(context.Background(), &result)
+		if err != nil {
+			log.Fatalln("Unable to get workflow result:", err)
+		}
+
+		log.Println("Workflow result:", result)
+
+		// Delay for 5 seconds before the next iteration
+		time.Sleep(5 * time.Second)
 	}
-	log.Println("Workflow result:", result)
 }

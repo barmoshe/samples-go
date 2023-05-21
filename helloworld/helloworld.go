@@ -12,17 +12,17 @@ import (
 )
 
 // Workflow is a Hello World workflow definition.
-func Workflow(ctx workflow.Context, name string) (string, error) {
+func Workflow(ctx workflow.Context, num string) (string, error) {
 	ao := workflow.ActivityOptions{
 		StartToCloseTimeout: 10 * time.Second,
 	}
 	ctx = workflow.WithActivityOptions(ctx, ao)
 
 	logger := workflow.GetLogger(ctx)
-	logger.Info("HelloWorld workflow started", "name", name)
+	logger.Info("HelloWorld workflow started\n", "number", num)
 
 	var result string
-	err := workflow.ExecuteActivity(ctx, Activity, name).Get(ctx, &result)
+	err := workflow.ExecuteActivity(ctx, Activity, num).Get(ctx, &result)
 	if err != nil {
 		logger.Error("Activity failed.", "Error", err)
 		return "", err
@@ -33,8 +33,8 @@ func Workflow(ctx workflow.Context, name string) (string, error) {
 	return result, nil
 }
 
-func Activity(ctx context.Context, name string) (string, error) {
+func Activity(ctx context.Context, num string) (string, error) {
 	logger := activity.GetLogger(ctx)
-	logger.Info("Activity", "name", name)
-	return "Hello " + name + "!", nil
+	logger.Info("Activity", "number", num)
+	return "Hello " + num + "!", nil
 }

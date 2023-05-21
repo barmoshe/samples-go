@@ -6,6 +6,7 @@ replace github.com/cactus/go-statsd-client => github.com/cactus/go-statsd-client
 
 require (
 	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
+	github.com/faiface/beep v1.1.0 // indirect
 	github.com/golang/mock v1.6.0
 	github.com/golang/snappy v0.0.4
 	github.com/google/uuid v1.3.0
@@ -25,6 +26,7 @@ require (
 	go.temporal.io/server v1.15.2
 	go.uber.org/multierr v1.7.0
 	go.uber.org/zap v1.20.0
+	golang.org/x/exp/shiny v0.0.0-20230510235704-dd950f8aeaea // indirect
 	google.golang.org/grpc v1.54.0
 	gopkg.in/square/go-jose.v2 v2.6.0
 	gopkg.in/yaml.v3 v3.0.1
